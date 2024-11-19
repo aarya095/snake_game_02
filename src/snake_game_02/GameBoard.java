@@ -92,6 +92,7 @@ public class GameBoard extends JPanel implements ActionListener {
         g.setColor(Color.WHITE);
         g.setFont(font);
         g.drawString(msg, (getWidth() - metrics.stringWidth(msg)) / 2, getHeight() / 2);
+        g.drawString("Score: " + controller.getScore(), getWidth() - 100, 25);
 
         if (restartButton.getParent() == null) {
             add(restartButton);
