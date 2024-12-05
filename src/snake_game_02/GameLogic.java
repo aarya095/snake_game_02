@@ -6,6 +6,12 @@ import javax.swing.*;
 import java.util.Random;
 
 public class GameLogic {
+	
+	private static final int GAME_AREA_START_X = 20;
+	private static final int GAME_AREA_START_Y = 40;
+	private static final int GAME_AREA_END_X = 320;
+	private static final int GAME_AREA_END_Y = 340;
+	
     private static final int DOT_SIZE = 10;
     private static final int ALL_DOTS = 900;
     private static final int RANDOM_POSITION = 28;
@@ -183,7 +189,7 @@ public class GameLogic {
                 inGame = false;
             }
         }
-        if (x[0] < 20 || x[0] >= 320 || y[0] < 40 || y[0] >= 340) {
+        if (x[0] < GAME_AREA_START_X || x[0] >= GAME_AREA_END_X || y[0] < GAME_AREA_START_Y || y[0] >= GAME_AREA_END_Y) {
             inGame = false;
         }
     }
