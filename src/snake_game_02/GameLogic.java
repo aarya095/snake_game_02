@@ -3,11 +3,13 @@ package snake_game_02;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
+import java.util.Random;
 
 public class GameLogic {
     private static final int DOT_SIZE = 10;
     private static final int ALL_DOTS = 900;
     private static final int RANDOM_POSITION = 28;
+    private final Random random = new Random();
 
     private final int[] x = new int[ALL_DOTS];
     private final int[] y = new int[ALL_DOTS];
@@ -18,8 +20,10 @@ public class GameLogic {
     
     private int SpecialAppleX;
     private int SpecialAppleY;
-    private static final double SPECIAL_APPLE_PROBABILITY = 0.75;
     private boolean SpecialAppleVisible = false;
+    private static final int SPECIAL_APPLE_PROBABILITY = 40;
+    private long lastSpecialAppleCheckTime = System.currentTimeMillis();
+    private static final int SPECIAL_APPLE_CHECK_DELAY = 5000;  // 1000 ms = 1 second
 
     private boolean leftDirection = false;
     private boolean rightDirection = true;
@@ -32,6 +36,8 @@ public class GameLogic {
     private Image dot;
     private Image head;
     private static Image specialApple;
+    
+    private int frameCounter = 0;
 
     public void loadImages() {
     	try {
@@ -39,6 +45,11 @@ public class GameLogic {
         dot = new ImageIcon(getClass().getResource("/icons/dot.png")).getImage();
         head = new ImageIcon(getClass().getResource("/icons/head.png")).getImage();
         specialApple = new ImageIcon(getClass().getResource("/icons/specialApple.png")).getImage();
+        
+        if (apple == null || dot == null || head == null || specialApple == null) {
+            throw new IllegalArgumentException("One or more image resources could not be loaded.");
+        }
+        
     	} catch (Exception e) {
     		System.out.println("Error loading images: "+e.getMessage());
     		e.printStackTrace();
@@ -84,13 +95,18 @@ public class GameLogic {
                     rightDirection = false;
                     break;
             }
-
-            move();
+            
+           move();
             checkApple();
             checkSpecialApple();
             checkCollision();
             
-            handleSpecialApple();
+            frameCounter++;
+
+            if (frameCounter % 9 == 0) { // Every 9 frames, which is 1 second at 9 FPS
+                handleSpecialApple();
+            }
+            
         }
     }
 
@@ -119,10 +135,7 @@ public class GameLogic {
     	if (x[0] == SpecialAppleX && y[0] == SpecialAppleY) {
     		dots++;
             score += 20;
-            
-           SpecialAppleX = -DOT_SIZE; // reset its position
-           SpecialAppleY = -DOT_SIZE;
-           SpecialAppleVisible = false; // Hide special apple after it's eaten
+            SpecialAppleVisible = false; // Hide special apple after it's eaten
             }
         }
     
@@ -130,11 +143,8 @@ public class GameLogic {
 	    boolean validPosition = false;
 	    
 	    while (!validPosition) {
-	        int r = (int)(Math.random() * RANDOM_POSITION);
-	        appleX = r * DOT_SIZE + 20; // Offset for left border
-
-	        r = (int)(Math.random() * RANDOM_POSITION);
-	        appleY = r * DOT_SIZE + 40; // Offset for top border
+	    	appleX = random.nextInt(RANDOM_POSITION) * DOT_SIZE + 20;
+	        appleY = random.nextInt(RANDOM_POSITION) * DOT_SIZE + 40;
 
 	        // Check if the apple spawns on the snake's body
 	        validPosition = true;
@@ -152,13 +162,10 @@ public class GameLogic {
     	
     	boolean validPosition = false;
  	    while (!validPosition) {
- 	        int r = (int)(Math.random() * RANDOM_POSITION);
- 	       SpecialAppleX = r * DOT_SIZE + 20; // Offset for left border
-
- 	        r = (int)(Math.random() * RANDOM_POSITION);
- 	       SpecialAppleY = r * DOT_SIZE + 40; // Offset for top border
-
- 	        // Check if the apple spawns on the snake's body
+ 	    	SpecialAppleX = random.nextInt(RANDOM_POSITION) * DOT_SIZE + 20;
+ 	    	SpecialAppleY = random.nextInt(RANDOM_POSITION) * DOT_SIZE + 40;
+ 	        
+ 	    	// Check if the apple spawns on the snake's body
  	        validPosition = true;
  	        for (int i = 0; i < dots; i++) {
  	            if (x[i] == SpecialAppleX && y[i] == SpecialAppleY) {
@@ -166,6 +173,7 @@ public class GameLogic {
  	                break;
  	            }
  	        }
+ 	        
  	       if (SpecialAppleX == appleX && SpecialAppleY == appleY) {
  	            validPosition = false; // Overlap with regular apple
  	        }
@@ -174,12 +182,15 @@ public class GameLogic {
     }
     
     private void handleSpecialApple() {
-    	if (!SpecialAppleVisible) {
+    	
+    	long currentTime = System.currentTimeMillis();
+    	if (!SpecialAppleVisible && currentTime - lastSpecialAppleCheckTime > SPECIAL_APPLE_CHECK_DELAY) {
     		
-    		if (Math.random() < (SPECIAL_APPLE_PROBABILITY/100)) {
+    		if (Math.random() < (SPECIAL_APPLE_PROBABILITY/100.0)) {
     			locateSpecialApple();
     			SpecialAppleVisible = true;
     		}
+    		lastSpecialAppleCheckTime = currentTime;
     	} 
     }
 
