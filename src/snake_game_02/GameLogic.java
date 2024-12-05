@@ -25,11 +25,8 @@ public class GameLogic {
     private long lastSpecialAppleCheckTime = System.currentTimeMillis();
     private static final int SPECIAL_APPLE_CHECK_DELAY = 5000;  // 1000 ms = 1 second
 
-    private boolean leftDirection = false;
-    private boolean rightDirection = true;
-    private boolean upDirection = false;
-    private boolean downDirection = false;
-    private int nextDirection = KeyEvent.VK_RIGHT; // Start moving right by default
+    private Direction currentDirection = Direction.RIGHT;
+    private Direction nextDirection = Direction.RIGHT; // Start moving right by default
     private boolean inGame = true;
 
     private static Image apple;
@@ -63,40 +60,15 @@ public class GameLogic {
             y[i] = 50;
         }
         locateApple();
-        nextDirection = KeyEvent.VK_RIGHT;
+        nextDirection = Direction.RIGHT;
     }
 
     public void updateGame() {
         if (inGame) {
             // Update the direction before moving
-            switch (nextDirection) {
-                case KeyEvent.VK_LEFT:
-                    leftDirection = true;
-                    rightDirection = false;
-                    upDirection = false;
-                    downDirection = false;
-                    break;
-                case KeyEvent.VK_RIGHT:
-                    rightDirection = true;
-                    leftDirection = false;
-                    upDirection = false;
-                    downDirection = false;
-                    break;
-                case KeyEvent.VK_UP:
-                    upDirection = true;
-                    downDirection = false;
-                    leftDirection = false;
-                    rightDirection = false;
-                    break;
-                case KeyEvent.VK_DOWN:
-                    downDirection = true;
-                    upDirection = false;
-                    leftDirection = false;
-                    rightDirection = false;
-                    break;
-            }
+        	currentDirection = nextDirection;
             
-           move();
+        	move();
             checkApple();
             checkSpecialApple();
             checkCollision();
@@ -116,11 +88,22 @@ public class GameLogic {
             x[i] = x[i - 1];
             y[i] = y[i - 1];
         }
-
-        if (leftDirection) x[0] -= DOT_SIZE;
-        if (rightDirection) x[0] += DOT_SIZE;
-        if (upDirection) y[0] -= DOT_SIZE;
-        if (downDirection) y[0] += DOT_SIZE;
+        
+        switch (currentDirection) {
+        case LEFT:
+            x[0] -= DOT_SIZE;
+            break;
+        case RIGHT:
+            x[0] += DOT_SIZE;
+            break;
+        case UP:
+            y[0] -= DOT_SIZE;
+            break;
+        case DOWN:
+            y[0] += DOT_SIZE;
+            break;
+    }
+        
     }
 
     private void checkApple() {
@@ -209,19 +192,29 @@ public class GameLogic {
         int key = e.getKeyCode(); // Get the key pressed
 
         if (inGame) {
-            // Update the direction based on key press
-            if (key == KeyEvent.VK_LEFT && !rightDirection) {
-                nextDirection = KeyEvent.VK_LEFT;
-            } else if (key == KeyEvent.VK_RIGHT && !leftDirection) {
-                nextDirection = KeyEvent.VK_RIGHT;
-            } else if (key == KeyEvent.VK_UP && !downDirection) {
-                nextDirection = KeyEvent.VK_UP;
-            } else if (key == KeyEvent.VK_DOWN && !upDirection) {
-                nextDirection = KeyEvent.VK_DOWN;
+           
+        	Direction newDirection = Direction.fromKeyCode(key);
+        	if (newDirection != null && !newDirection.equals(oppositeDirection(currentDirection))) {
+                nextDirection = newDirection;
             }
         }
     }
 
+    private Direction oppositeDirection(Direction direction) {
+        switch (direction) {
+            case LEFT:
+                return Direction.RIGHT;
+            case RIGHT:
+                return Direction.LEFT;
+            case UP:
+                return Direction.DOWN;
+            case DOWN:
+                return Direction.UP;
+            default:
+                throw new IllegalArgumentException("Unknown direction: " + direction);
+        }
+    }
+    
     public void resetGame() {
         inGame = true;
         score = 0;
