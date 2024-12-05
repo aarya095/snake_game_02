@@ -123,6 +123,16 @@ public class GameLogic {
     private void checkSpecialApple() {
     	if (x[0] == SpecialAppleX && y[0] == SpecialAppleY) {
     		dots++;
+    		
+    		 int extraDots = 5;
+    	        dots += extraDots;
+    	        
+    	        // Extend the snake by adding new body segments at the last segment's position
+    	        for (int i = 0; i < extraDots; i++) {
+    	            x[dots - 1 - i] = x[dots - 2 - i];  // Set the new body segment's x-position
+    	            y[dots - 1 - i] = y[dots - 2 - i];  // Set the new body segment's y-position
+    	        }
+    		
             score += 20;
             SpecialAppleVisible = false; // Hide special apple after it's eaten
             }
