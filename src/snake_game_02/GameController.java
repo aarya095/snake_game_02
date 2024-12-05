@@ -23,6 +23,10 @@ public class GameController {
     public boolean isInGame() {
         return logic.isInGame();
     }
+    
+    public boolean isSpecialAppleVisible() {
+    	return logic.isSpecialAppleVisible();
+    }
 
     public void handleKeyPress(KeyEvent e) {
         logic.keyPressed(e);

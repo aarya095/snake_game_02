@@ -18,6 +18,8 @@ public class GameLogic {
     
     private int SpecialAppleX;
     private int SpecialAppleY;
+    private static final double SPECIAL_APPLE_PROBABILITY = 0.2;
+    private boolean SpecialAppleVisible = false;
 
     private boolean leftDirection = false;
     private boolean rightDirection = true;
@@ -88,6 +90,8 @@ public class GameLogic {
             checkApple();
             checkSpecialApple();
             checkCollision();
+            
+            handleSpecialApple();
         }
     }
 
@@ -109,20 +113,16 @@ public class GameLogic {
             dots++;
             score += 10;
             locateApple();
-            
-        }
+            }
     }
     
     private void checkSpecialApple() {
-      /* System.out.println("Special Apple: " + SpecialAppleX + ", " + SpecialAppleY);
-        System.out.println("Snake Head: " + x[0] + ", " + y[0]);
-        System.out.println("\n");*/
-        if (x[0] == SpecialAppleX && y[0] == SpecialAppleY) {
-        	System.out.println("Special apple eaten!");
-            dots++;
+    	if (x[0] == SpecialAppleX && y[0] == SpecialAppleY) {
+    		dots++;
             score += 20;
-            locateSpecialApple();
-        	}
+            SpecialAppleX = -DOT_SIZE; // Remove the special apple after it's eaten
+            SpecialAppleY = -DOT_SIZE;
+    		}
         }
     
     public void locateApple() {
@@ -149,8 +149,7 @@ public class GameLogic {
     
     public void locateSpecialApple() {
     	
-    	 boolean validPosition = false;
- 	    
+    	boolean validPosition = false;
  	    while (!validPosition) {
  	        int r = (int)(Math.random() * RANDOM_POSITION);
  	       SpecialAppleX = r * DOT_SIZE + 20; // Offset for left border
@@ -171,6 +170,16 @@ public class GameLogic {
  	        }
  	    }
     	
+    }
+    
+    private void handleSpecialApple() {
+    	if (!SpecialAppleVisible) {
+    		
+    		if (Math.random()>SPECIAL_APPLE_PROBABILITY) {
+    			locateSpecialApple();
+    			SpecialAppleVisible = true;
+    		}
+    	} 
     }
 
     private void checkCollision() {
@@ -209,30 +218,13 @@ public class GameLogic {
         locateSpecialApple();
     }
     
-    public static void main(String[] args) {
-        GameLogic gameLogic = new GameLogic();
-        gameLogic.loadImages(); // Load images before accessing them
-
-        if (gameLogic.getApple() == null) {
-            System.out.println("Apple image failed to load!");
-        } else {
-            System.out.println("Apple image loaded successfully!");
-            System.out.println("Apple Image Dimensions: " + gameLogic.getApple().getWidth(null) + "x" 
-                                + gameLogic.getApple().getHeight(null));
-        }
-
-        if (gameLogic.getSpecialApple() == null) {
-            System.out.println("Special apple image failed to load!");
-        } else {
-            System.out.println("Special apple image loaded successfully!");
-            System.out.println("Special Apple Dimensions: " + gameLogic.getSpecialApple().getWidth(null) + "x" 
-                                + gameLogic.getSpecialApple().getHeight(null));
-        }
-    }
-
-
+    
     public boolean isInGame() {
         return inGame;
+    }
+    
+    public boolean isSpecialAppleVisible() {
+    	return SpecialAppleVisible;
     }
 
     public int[] getX() {

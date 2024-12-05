@@ -67,7 +67,9 @@ public class GameBoard extends JPanel implements ActionListener {
         // Draw apple
         g.drawImage(controller.getAppleImage(), controller.getAppleX(), controller.getAppleY(), this);
         // Draw Special apple
-        g.drawImage(controller.getSpecialAppleImage(), controller.getSpecialAppleX(), controller.getSpecialAppleY(), this);
+        if(controller.isSpecialAppleVisible()) {
+        	g.drawImage(controller.getSpecialAppleImage(), controller.getSpecialAppleX(), controller.getSpecialAppleY(), this);
+    }
         // Draw snake
         int[] x = controller.getSnakeX();
         int[] y = controller.getSnakeY();
