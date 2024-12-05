@@ -18,7 +18,7 @@ public class GameLogic {
     
     private int SpecialAppleX;
     private int SpecialAppleY;
-    private static final double SPECIAL_APPLE_PROBABILITY = 0.2;
+    private static final double SPECIAL_APPLE_PROBABILITY = 0.75;
     private boolean SpecialAppleVisible = false;
 
     private boolean leftDirection = false;
@@ -52,7 +52,6 @@ public class GameLogic {
             y[i] = 50;
         }
         locateApple();
-        locateSpecialApple();
         nextDirection = KeyEvent.VK_RIGHT;
     }
 
@@ -120,9 +119,11 @@ public class GameLogic {
     	if (x[0] == SpecialAppleX && y[0] == SpecialAppleY) {
     		dots++;
             score += 20;
-            SpecialAppleX = -DOT_SIZE; // Remove the special apple after it's eaten
-            SpecialAppleY = -DOT_SIZE;
-    		}
+            
+           SpecialAppleX = -DOT_SIZE; // reset its position
+           SpecialAppleY = -DOT_SIZE;
+           SpecialAppleVisible = false; // Hide special apple after it's eaten
+            }
         }
     
     public void locateApple() {
@@ -175,7 +176,7 @@ public class GameLogic {
     private void handleSpecialApple() {
     	if (!SpecialAppleVisible) {
     		
-    		if (Math.random()>SPECIAL_APPLE_PROBABILITY) {
+    		if (Math.random() < (SPECIAL_APPLE_PROBABILITY/100)) {
     			locateSpecialApple();
     			SpecialAppleVisible = true;
     		}
@@ -213,10 +214,10 @@ public class GameLogic {
     public void resetGame() {
         inGame = true;
         score = 0;
+        SpecialAppleVisible = false;
         initGame();
         locateApple();
-        locateSpecialApple();
-    }
+        }
     
     
     public boolean isInGame() {
