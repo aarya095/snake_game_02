@@ -85,6 +85,10 @@ public class GameLogic {
                 handleSpecialApple();
             }
             
+            if (SpecialAppleVisible && (System.currentTimeMillis() - lastSpecialAppleCheckTime) > 5000) {
+            	SpecialAppleVisible = false;
+            }
+            
         }
     }
 
@@ -178,6 +182,8 @@ public class GameLogic {
  	        }
  	    }
     	
+ 	   lastSpecialAppleCheckTime = System.currentTimeMillis();
+ 	   SpecialAppleVisible = true;
     }
     
     private void handleSpecialApple() {
