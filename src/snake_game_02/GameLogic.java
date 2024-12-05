@@ -27,7 +27,7 @@ public class GameLogic {
     private int SpecialAppleX;
     private int SpecialAppleY;
     private boolean SpecialAppleVisible = false;
-    private static final int SPECIAL_APPLE_PROBABILITY = 40;
+    private static final int SPECIAL_APPLE_PROBABILITY = 20;
     private long lastSpecialAppleCheckTime = System.currentTimeMillis();
     private static final int SPECIAL_APPLE_CHECK_DELAY = 5000;  // 1000 ms = 1 second
 
