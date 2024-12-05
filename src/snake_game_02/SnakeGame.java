@@ -15,7 +15,7 @@ public class SnakeGame extends JFrame {
 
         // Add the game board to the frame
         add(new GameBoard(gameController));
-        pack(); // Adjust the window size to fit the game board
+        pack(); // pack() method automatically sizes the JFrame based on the preferred sizes of its child components.
 
         // Set the application icon
         try {
@@ -34,6 +34,11 @@ public class SnakeGame extends JFrame {
 
     public static void main(String[] args) {
         // Run the game
-        SwingUtilities.invokeLater(SnakeGame::new);
+        SwingUtilities.invokeLater(SnakeGame::new); //creates an instance of JFrame
+        /*
+         * runs the SnakeGame constructor (new SnakeGame()) 
+         * on the Event Dispatch Thread (EDT), 
+         * which is the proper thread for Swing GUI updates.
+         * */
     }
 }

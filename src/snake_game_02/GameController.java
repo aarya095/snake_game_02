@@ -47,6 +47,18 @@ public class GameController {
     public int getAppleY() {
         return logic.getAppleY();
     }
+    
+    public int getSpecialAppleX() {
+        return logic.getSpecialAppleX();
+    }
+
+    public int getSpecialAppleY() {
+        return logic.getSpecialAppleY();
+    }
+    
+    public Image getSpecialAppleImage() {
+        return logic.getSpecialApple();
+    }
 
     public Image getAppleImage() {
         return logic.getApple();

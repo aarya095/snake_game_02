@@ -15,6 +15,9 @@ public class GameLogic {
     private int appleX;
     private int appleY;
     private int score;
+    
+    private int SpecialAppleX;
+    private int SpecialAppleY;
 
     private boolean leftDirection = false;
     private boolean rightDirection = true;
@@ -23,14 +26,21 @@ public class GameLogic {
     private int nextDirection = KeyEvent.VK_RIGHT; // Start moving right by default
     private boolean inGame = true;
 
-    private Image apple;
+    private static Image apple;
     private Image dot;
     private Image head;
+    private static Image specialApple;
 
     public void loadImages() {
+    	try {
         apple = new ImageIcon(getClass().getResource("/icons/apple.png")).getImage();
         dot = new ImageIcon(getClass().getResource("/icons/dot.png")).getImage();
         head = new ImageIcon(getClass().getResource("/icons/head.png")).getImage();
+        specialApple = new ImageIcon(getClass().getResource("/icons/specialApple.png")).getImage();
+    	} catch (Exception e) {
+    		System.out.println("Error loading images: "+e.getMessage());
+    		e.printStackTrace();
+    	}
     }
 
     public void initGame() {
@@ -40,6 +50,7 @@ public class GameLogic {
             y[i] = 50;
         }
         locateApple();
+        locateSpecialApple();
         nextDirection = KeyEvent.VK_RIGHT;
     }
 
@@ -75,6 +86,7 @@ public class GameLogic {
 
             move();
             checkApple();
+            checkSpecialApple();
             checkCollision();
         }
     }
@@ -97,9 +109,22 @@ public class GameLogic {
             dots++;
             score += 10;
             locateApple();
+            
         }
     }
-
+    
+    private void checkSpecialApple() {
+      /* System.out.println("Special Apple: " + SpecialAppleX + ", " + SpecialAppleY);
+        System.out.println("Snake Head: " + x[0] + ", " + y[0]);
+        System.out.println("\n");*/
+        if (x[0] == SpecialAppleX && y[0] == SpecialAppleY) {
+        	System.out.println("Special apple eaten!");
+            dots++;
+            score += 20;
+            locateSpecialApple();
+        	}
+        }
+    
     public void locateApple() {
 	    boolean validPosition = false;
 	    
@@ -121,6 +146,32 @@ public class GameLogic {
 	    }
 	    
 	    }
+    
+    public void locateSpecialApple() {
+    	
+    	 boolean validPosition = false;
+ 	    
+ 	    while (!validPosition) {
+ 	        int r = (int)(Math.random() * RANDOM_POSITION);
+ 	       SpecialAppleX = r * DOT_SIZE + 20; // Offset for left border
+
+ 	        r = (int)(Math.random() * RANDOM_POSITION);
+ 	       SpecialAppleY = r * DOT_SIZE + 40; // Offset for top border
+
+ 	        // Check if the apple spawns on the snake's body
+ 	        validPosition = true;
+ 	        for (int i = 0; i < dots; i++) {
+ 	            if (x[i] == SpecialAppleX && y[i] == SpecialAppleY) {
+ 	                validPosition = false; // Found a collision with the snake
+ 	                break;
+ 	            }
+ 	        }
+ 	       if (SpecialAppleX == appleX && SpecialAppleY == appleY) {
+ 	            validPosition = false; // Overlap with regular apple
+ 	        }
+ 	    }
+    	
+    }
 
     private void checkCollision() {
         for (int i = dots; i > 0; i--) {
@@ -154,7 +205,31 @@ public class GameLogic {
         inGame = true;
         score = 0;
         initGame();
+        locateApple();
+        locateSpecialApple();
     }
+    
+    public static void main(String[] args) {
+        GameLogic gameLogic = new GameLogic();
+        gameLogic.loadImages(); // Load images before accessing them
+
+        if (gameLogic.getApple() == null) {
+            System.out.println("Apple image failed to load!");
+        } else {
+            System.out.println("Apple image loaded successfully!");
+            System.out.println("Apple Image Dimensions: " + gameLogic.getApple().getWidth(null) + "x" 
+                                + gameLogic.getApple().getHeight(null));
+        }
+
+        if (gameLogic.getSpecialApple() == null) {
+            System.out.println("Special apple image failed to load!");
+        } else {
+            System.out.println("Special apple image loaded successfully!");
+            System.out.println("Special Apple Dimensions: " + gameLogic.getSpecialApple().getWidth(null) + "x" 
+                                + gameLogic.getSpecialApple().getHeight(null));
+        }
+    }
+
 
     public boolean isInGame() {
         return inGame;
@@ -179,9 +254,21 @@ public class GameLogic {
     public int getAppleY() {
         return appleY;
     }
+    
+    public int getSpecialAppleX() {
+        return SpecialAppleX;
+    }
+
+    public int getSpecialAppleY() {
+        return SpecialAppleY;
+    }
 
     public Image getApple() {
         return apple;
+    }
+    
+    public Image getSpecialApple() {
+        return specialApple;
     }
 
     public Image getDot() {
