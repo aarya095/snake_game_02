@@ -5,10 +5,16 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class GameBoard extends JPanel implements ActionListener {
-    private final GameController controller;
+    
+	private final GameController controller;
     private final Timer timer;
     private final JButton restartButton;
-
+    
+    private static final int TIMER_BAR_WIDTH = 200;  // Width of the timer bar
+    private static final int TIMER_BAR_HEIGHT = 10;  // Height of the timer bar
+    private static final int TIMER_X = 20; // Starting X position of the timer bar
+    private static final int TIMER_Y = 20; // Starting Y position of the timer bar
+   
     public GameBoard(GameController controller) {
         this.controller = controller;
 
@@ -55,6 +61,10 @@ public class GameBoard extends JPanel implements ActionListener {
         // Render game objects
         if (controller.isInGame()) {
             drawGame(g);
+            
+            if (controller.isSpecialAppleVisible()) {
+            	drawTimerBar(g);
+            }
         } else {
             drawGameOver(g);
         }
@@ -100,6 +110,21 @@ public class GameBoard extends JPanel implements ActionListener {
         if (restartButton.getParent() == null) {
             add(restartButton);
         }
+    }
+    
+    private void drawTimerBar (Graphics g) {
+    	
+    	long remainingTime = controller.getSpecialAppleRemainingTime();
+    	
+    	
+    	int progressWidth = (int)((remainingTime/5000.0) * TIMER_BAR_WIDTH);
+    	
+    	g.setColor(Color.gray);
+    	g.fillRect(TIMER_X, TIMER_Y, TIMER_BAR_WIDTH, TIMER_BAR_HEIGHT);
+    	
+    	g.setColor(Color.GREEN);
+    	g.fillRect(TIMER_X, TIMER_Y, progressWidth, TIMER_BAR_HEIGHT);
+    	
     }
 
     @Override

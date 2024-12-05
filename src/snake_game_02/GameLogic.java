@@ -30,6 +30,7 @@ public class GameLogic {
     private static final int SPECIAL_APPLE_PROBABILITY = 20;
     private long lastSpecialAppleCheckTime = System.currentTimeMillis();
     private static final int SPECIAL_APPLE_CHECK_DELAY = 5000;  // 1000 ms = 1 second
+    private long specialAppleStartTime;
 
     private Direction currentDirection = Direction.RIGHT;
     private Direction nextDirection = Direction.RIGHT; // Start moving right by default
@@ -197,6 +198,15 @@ public class GameLogic {
     		}
     		lastSpecialAppleCheckTime = currentTime;
     	} 
+    }
+    
+    public long getSpecialAppleRemainingTime() {
+    	if (SpecialAppleVisible) {
+    		long elapsedTime = System.currentTimeMillis() - specialAppleStartTime;
+    		long remainingTime = 5000 - elapsedTime; // 5 seconds for the timer
+    		return Math.max(remainingTime, 0);  // Return 0 if the time has passed
+    	}
+    	return 0;
     }
 
     private void checkCollision() {

@@ -27,6 +27,10 @@ public class GameController {
     public boolean isSpecialAppleVisible() {
     	return logic.isSpecialAppleVisible();
     }
+    
+    public long getSpecialAppleRemainingTime() {
+    	return logic.getSpecialAppleRemainingTime();
+    }
 
     public void handleKeyPress(KeyEvent e) {
         logic.keyPressed(e);
