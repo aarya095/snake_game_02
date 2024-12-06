@@ -31,6 +31,7 @@ public class GameLogic {
     private long lastSpecialAppleCheckTime = System.currentTimeMillis();
     private static final int SPECIAL_APPLE_CHECK_DELAY = 5000;  // 1000 ms = 1 second
     private long specialAppleStartTime;
+    private int segmentsToAdd = 0; // Tracks how many segments still need to be added
 
     private Direction currentDirection = Direction.RIGHT;
     private Direction nextDirection = Direction.RIGHT; // Start moving right by default
@@ -76,6 +77,12 @@ public class GameLogic {
         	currentDirection = nextDirection;
             
         	move();
+        	
+        	if (segmentsToAdd > 0) {
+                addSegment();
+                segmentsToAdd--;  // Decrease the counter
+            }
+        	
             checkApple();
             checkSpecialApple();
             checkCollision();
@@ -126,24 +133,16 @@ public class GameLogic {
     }
     
     private void checkSpecialApple() {
-    	if (x[0] == SpecialAppleX && y[0] == SpecialAppleY) {
-    		dots++;
-    		
-    		 int extraDots = 5;
-    	        dots += extraDots;
-    	        
-    	        // Extend the snake by adding new body segments at the last segment's position
-    	        for (int i = 0; i < extraDots; i++) {
-    	            x[dots - 1 - i] = x[dots - 2 - i];  // Set the new body segment's x-position
-    	            y[dots - 1 - i] = y[dots - 2 - i];  // Set the new body segment's y-position
-    	        }
-    		
-            score += 20;
-            SpecialAppleVisible = false; // Hide special apple after it's eaten
-            }
-        }
+        if (x[0] == SpecialAppleX && y[0] == SpecialAppleY) {
+            
+        	segmentsToAdd += 5; // Gradually add 5 segments
+        	score += 20;
+            SpecialAppleVisible = false;
+}
+    }
+
     
-    public void locateApple() {
+    private void locateApple() {
 	    boolean validPosition = false;
 	    
 	    while (!validPosition) {
@@ -162,7 +161,7 @@ public class GameLogic {
 	    
 	    }
     
-    public void locateSpecialApple() {
+    private void locateSpecialApple() {
     	
     	boolean validPosition = false;
  	    while (!validPosition) {
@@ -199,6 +198,13 @@ public class GameLogic {
     		}
     		lastSpecialAppleCheckTime = currentTime;
     	} 
+    }
+    
+    public void addSegment() {
+    	// Place the new segment at the same position as the last segment
+        x[dots] = x[dots - 1];
+        y[dots] = y[dots - 1];
+        dots++; // Increase the total length of the snake
     }
     
     public long getSpecialAppleRemainingTime() {

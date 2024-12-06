@@ -83,14 +83,17 @@ public class GameBoard extends JPanel implements ActionListener {
         // Draw snake
         int[] x = controller.getSnakeX();
         int[] y = controller.getSnakeY();
+        
         for (int i = 0; i < controller.getSnakeLength(); i++) {
+        	
+        	 if (x[i] >= 20 && x[i] < 320 && y[i] >= 40 && y[i] < 340) {
             if (i == 0) {
                 g.drawImage(controller.getSnakeHeadImage(), x[i], y[i], this);
             } else {
                 g.drawImage(controller.getSnakeBodyImage(), x[i], y[i], this);
             }
         }
-
+        }
         // Display score
         g.setColor(Color.WHITE);
         g.setFont(new Font("SAN SERIF", Font.BOLD, 14));

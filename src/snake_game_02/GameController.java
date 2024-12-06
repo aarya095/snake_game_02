@@ -19,6 +19,10 @@ public class GameController {
     public void restartGame() {
         logic.resetGame();
     }
+    
+    public void addSegment() {
+    	logic.addSegment();
+    }
 
     public boolean isInGame() {
         return logic.isInGame();
