@@ -114,7 +114,7 @@ public class GameBoard extends JPanel implements ActionListener {
     
     private void drawTimerBar (Graphics g) {
     	
-    	long remainingTime = controller.getSpecialAppleRemainingTime();
+    	long remainingTime = Math.max(0, Math.min(controller.getSpecialAppleRemainingTime(), 5000));
     	
     	
     	int progressWidth = (int)((remainingTime/5000.0) * TIMER_BAR_WIDTH);
@@ -122,9 +122,10 @@ public class GameBoard extends JPanel implements ActionListener {
     	g.setColor(Color.gray);
     	g.fillRect(TIMER_X, TIMER_Y, TIMER_BAR_WIDTH, TIMER_BAR_HEIGHT);
     	
+    	if(progressWidth > 0) {
     	g.setColor(Color.GREEN);
     	g.fillRect(TIMER_X, TIMER_Y, progressWidth, TIMER_BAR_HEIGHT);
-    	
+    	}
     }
 
     @Override

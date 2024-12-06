@@ -184,6 +184,7 @@ public class GameLogic {
  	    }
     	
  	   lastSpecialAppleCheckTime = System.currentTimeMillis();
+ 	   specialAppleStartTime = System.currentTimeMillis();
  	   SpecialAppleVisible = true;
     }
     
