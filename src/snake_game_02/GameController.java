@@ -5,15 +5,27 @@ import java.awt.event.KeyEvent;
 
 public class GameController {
     private final GameLogic logic;
+    private boolean paused;
 
     public GameController() {
         logic = new GameLogic();
         logic.loadImages();
         logic.initGame();
+        paused = false; //game starts unpaused
     }
 
+    public boolean isPaused() {
+    	return paused;
+    }
+    
+    public void togglePause() {
+    	paused =! paused;
+    }
+    
     public void updateGame() {
+    	if(!paused) {
         logic.updateGame();
+    	}
     }
 
     public void restartGame() {

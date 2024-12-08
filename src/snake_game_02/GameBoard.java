@@ -24,7 +24,12 @@ public class GameBoard extends JPanel implements ActionListener {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+            	int key = e.getKeyCode();
+            	if (key == KeyEvent.VK_P || key == KeyEvent.VK_ESCAPE) {
+            		togglePause();
+            	} else {
                 controller.handleKeyPress(e);
+            	}
             }
         });
 
@@ -38,10 +43,23 @@ public class GameBoard extends JPanel implements ActionListener {
         timer.start();
     }
 
+    private void togglePause() {
+    	controller.togglePause();
+    	if(controller.isPaused()) {
+    		timer.stop();
+    	}	else {
+    		timer.start();
+    	}
+    	repaint();
+    }
+    
     private void restartGame() {
         controller.restartGame();
         if (restartButton.getParent() != null) {
             remove(restartButton);
+        }
+        if(controller.isPaused()) {
+        	controller.togglePause();
         }
         timer.start();
         repaint();
@@ -57,7 +75,10 @@ public class GameBoard extends JPanel implements ActionListener {
         
         g.setColor(Color.BLACK);
         g.fillRect(20, 40, 300, 300);
-
+        
+        if(controller.isPaused()) {
+        	drawPaused(g);
+        }
         // Render game objects
         if (controller.isInGame()) {
             drawGame(g);
@@ -68,6 +89,16 @@ public class GameBoard extends JPanel implements ActionListener {
         } else {
             drawGameOver(g);
         }
+    }
+    
+    private void drawPaused(Graphics g) {
+        String msg = "Game Paused";
+        Font font = new Font("SAN SERIF", Font.BOLD, 14);
+        FontMetrics metrics = getFontMetrics(font);
+
+        g.setColor(Color.WHITE);
+        g.setFont(font);
+        g.drawString(msg, (getWidth() - metrics.stringWidth(msg)) / 2, getHeight() / 2);
     }
 
     private void drawGame(Graphics g) {
@@ -133,7 +164,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (controller.isInGame()) {
+        if (controller.isInGame() && !controller.isPaused()) {
             controller.updateGame();
             repaint();
         }
